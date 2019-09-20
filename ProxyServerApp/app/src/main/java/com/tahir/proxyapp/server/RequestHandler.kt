@@ -4,11 +4,11 @@ import android.util.Log
 import com.tahir.cacheapp.ICacheResponseCallback
 import com.tahir.cacheapp.ICacheService
 import java.io.*
-import java.net.HttpURLConnection
 import java.net.Socket
 import java.net.URL
 import java.nio.charset.Charset
 import java.util.*
+import javax.net.ssl.HttpsURLConnection
 
 
 class RequestHandler(private val iCacheService: ICacheService?, private val client: Socket) {
@@ -90,9 +90,9 @@ class RequestHandler(private val iCacheService: ICacheService?, private val clie
      */
     @Throws(IOException::class)
     private fun downloadUrl(url: URL): String? {
-        var connection: HttpURLConnection? = null
+        var connection: HttpsURLConnection? = null
         return try {
-            connection = (url.openConnection() as? HttpURLConnection)
+            connection = (url.openConnection() as? HttpsURLConnection)
             connection?.run {
                 // Timeout for reading InputStream arbitrarily set to 3000ms.
                 readTimeout = 3000
@@ -105,7 +105,7 @@ class RequestHandler(private val iCacheService: ICacheService?, private val clie
                 doInput = true
                 // Open communications link (network traffic occurs here).
                 connect()
-                if (responseCode != HttpURLConnection.HTTP_OK) {
+                if (responseCode != HttpsURLConnection.HTTP_OK) {
                     throw IOException("HTTP error code: $responseCode")
                 }
                 // Retrieve the response body as an InputStream.
